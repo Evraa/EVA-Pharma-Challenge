@@ -62,7 +62,7 @@ def checkForMagic (mat):
     return False
 
 
-def check (mat, magic=0):
+def checkNoViolation (mat, magic=0):
     '''
     Checks if this matrix does not break any of the restrictions
     '''
@@ -110,6 +110,17 @@ def checkForForced (mat, neighbours, magic):
                     neighbour_1 = neighbour[1]
                     if mat[neighbour_0[0]][[neighbour_0[1]]] != 0 and\
                         mat[neighbour_1[0]][[neighbour_1[1]]] != 0:
-                        return i,j,(magic - mat[neighbour_0[0]][[neighbour_0[1]]] -\
+                        return True, i,j,(magic - mat[neighbour_0[0]][[neighbour_0[1]]] -\
                             mat[neighbour_1[0]][[neighbour_1[1]]])
     return False
+
+def allDone (mat):
+    '''
+    Check on count of zeros
+    '''
+    for row in mat:
+        for element in row:
+            if element == 0:
+                return False
+    return True
+    
