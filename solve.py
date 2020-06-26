@@ -37,10 +37,42 @@ def check (mat, magic=0):
         return False    
     return True
 
+def checkForMagic (mat):
+    '''
+    Return magic if exist, othw. returns false
+    dummy operation
+    '''
+
+    if mat[0,0]!=0 and mat[0,1]!=0 and mat[0,2]!=0:
+        return mat[0,0] + mat[0,1] + mat[0,2]
+
+    if mat[1,0]!=0 and mat[1,1]!=0 and mat[1,2]!=0:
+        return mat[1,0] + mat[1,1] + mat[1,2]
+
+    if mat[2,0]!=0 and mat[2,1]!=0 and mat[2,2]!=0:
+        return mat[2,0] + mat[2,1]!=0 + mat[2,2]
+
+    if mat[0,0]!=0 and mat[1,0]!=0 and mat[2,0]!=0:
+        return mat[0,0] + mat[1,0] + mat[2,0]
+
+    if mat[0,1]!=0 and mat[1,1]!=0 and mat[2,1]!=0:
+        return mat[0,1] + mat[1,1] + mat[2,1]
+
+    if mat[0,2]!=0 and mat[1,2]!=0 and mat[2,2]!=0:
+        return mat[0,2] + mat[1,2] + mat[2,2]
+
+    if mat[0,0]!=0 and mat[1,1]!=0 and mat[2,2]!=0:
+        return mat[0,0] + mat[1,1] + mat[2,2]
+
+    if mat[0,2]!=0 and mat[1,1]!=0 and mat[2,0]!=0:
+        return mat[0,2] + mat[1,1] + mat[2,0]
+    
+    return False
+
 
 
 def solve(mat):
-    print(check (mat,15))
+    print (checkForMagic(mat))
 
 if __name__ == "__main__":
     #mat = np.arange(9).reshape(3, 3)
