@@ -124,3 +124,34 @@ def allDone (mat):
                 return False
     return True
     
+def getBestOption(mat, neighbours):
+    max_cells = 0
+    cell_with_max_neighbours_x = None
+    cell_with_max_neighbours_y = None
+    N,M = mat.shape
+    for i in range(N):
+        for j in range(M):
+            if mat[i,j] == 0:
+                idx = (i*3) + j
+                neighbour_count = 0
+                for neighbour in neighbours[idx]:
+                    neighbour_0 = neighbour[0]
+                    neighbour_1 = neighbour[1]
+                    if mat[neighbour_0[0]][[neighbour_0[1]]] != 0:
+                        neighbour_count += 1
+                    if mat[neighbour_1[0]][[neighbour_1[1]]] != 0:
+                        neighbour_count += 1
+                if neighbour_count > max_cells:
+                    max_cells = neighbour_count
+                    cell_with_max_neighbours_x = i
+                    cell_with_max_neighbours_y = j
+
+    if cell_with_max_neighbours_x is not None:
+        return True, cell_with_max_neighbours_x, cell_with_max_neighbours_y
+    return False
+
+def optionExist (mat, option):
+    non_zeros = np.where(mat == option)
+    if len(non_zeros[0]) >= 1:
+        return True
+    return False
