@@ -28,7 +28,7 @@ def addOption (mat, neighbours, magic, orig_mat, options):
             return False, 0
         else:   
             mat[option_x, option_y] = options[idx] 
-            return True
+            return True, 1
 
     else:
         #Report problem!
@@ -73,34 +73,65 @@ def solve(mat):
     #Check for magic
     magic = checkForMagic(mat)
     
-    addOption(mat,neighbours,magic,orig_mat,options)
-    # if magic and non_zeros >= 4:
-    #     #state 1
-    #     pass
-    # if magic and non_zeros < 4:
-    #     #state 2..add option first and come back later
-    #     pass
+    #Non zero elements
+    non_zeros = np.where(mat != 0)
 
-    # while magic:
-    #     force_Exist, forced_idx_x,forced_idx_y,val = checkForForced(mat,Neigh,magic)
-    #     if force_Exist:
-    #         #update the orig_mat
-    #         mat[forced_idx_x][forced_idx_y] = val
+    if magic and len(non_zeros[0]) >= 4:
+        #state 1: fill forced with no added options
+        main_exist = False
+        while not main_exist:
+            force_Exist, forced_idx_x,forced_idx_y,val = checkForForced(mat,neighbours,magic)
+            if force_Exist:
+                #update the mat
+                mat[forced_idx_x][forced_idx_y] = val
+                #check for violation
+                if checkNoViolation(mat, magic):
+                    #check if all done
+                    if allDone(mat):
+                        print("all done")
+                        print (mat)
+                        main_exist = True
+        return
+        
+    if magic and len(non_zeros[0]) < 4:
+        #state 2..add option first and come back later
+        exit_main = False
+        while not exit_main:
+            # options_count = 0
+            #add option
+            option_exist, state = addOption(mat, neighbours, magic, orig_mat, options)
+            if not option_exist:
+                print ("Sorry, no solution available for this set of numbers")
+                print (orig_mat)
+                return 
+            #check for forced
+            force_Exist, forced_idx_x,forced_idx_y,val = checkForForced(mat,neighbours,magic)
 
-    #         #check for violation
-    #         if checkNoViolation(mat, magic):
-    #             #check if all done
-    #             if allDone(mat):
-    #                 print("all done")
-    #                 print (mat)
-    #                 return
-    #         else:
-    #             #TODO: logic_3...go back a step
-    #             pass
-    #     else:
-    #         #TODO: logic_1: add the best option
-    #         pass
-    
+            #I know force will exist
+            exit_sub = False
+            while force_Exist and not exit_sub:
+                #update the mat
+                mat[forced_idx_x][forced_idx_y] = val
+                #check for violation
+                if checkNoViolation(mat, magic):
+                    #check if all done
+                    if allDone(mat):
+                        if resultIsValid (mat, magic):
+                            print("all done")
+                            print (mat)
+                            exit_main = True
+                            return
+                else:
+                    #increment the option
+                    exit_sub = True
+                force_Exist, forced_idx_x,forced_idx_y,val = checkForForced(mat,neighbours,magic)
+            
+            #if reached here, no force exist and not all elements are filled,
+            #move backward with your options.
+
+            #remove option
+            mat = copy.deepcopy(orig_mat)
+   
 if __name__ == "__main__":
     #GLOBAL VARIABLES
     # orig_mat = np.zeros([3,3])
@@ -109,9 +140,10 @@ if __name__ == "__main__":
 
     #mat = np.arange(9).reshape(3, 3)
     mat = np.zeros([3,3])
-    mat[0,0] = 12
-    mat[0,1] = 17
-    mat[0,2] = 1
+    # mat[0,0] = 5
+    mat[0,1] = 7
+    mat[0,2] = 16
+    mat[1,0] = 15
     
     solve(mat)
     

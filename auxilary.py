@@ -108,11 +108,15 @@ def checkForForced (mat, neighbours, magic):
                 for neighbour in neighbours[idx]:
                     neighbour_0 = neighbour[0]
                     neighbour_1 = neighbour[1]
+                    #exist
                     if mat[neighbour_0[0]][[neighbour_0[1]]] != 0 and\
                         mat[neighbour_1[0]][[neighbour_1[1]]] != 0:
-                        return True, i,j,(magic - mat[neighbour_0[0]][[neighbour_0[1]]] -\
-                            mat[neighbour_1[0]][[neighbour_1[1]]])
-    return False
+                        #valid
+                        if (magic - mat[neighbour_0[0]][[neighbour_0[1]]] -\
+                            mat[neighbour_1[0]][[neighbour_1[1]]]) > 0:
+                            return True, i,j,(magic - mat[neighbour_0[0]][[neighbour_0[1]]] -\
+                                mat[neighbour_1[0]][[neighbour_1[1]]])
+    return False, None, None, None
 
 def allDone (mat):
     '''
@@ -155,3 +159,20 @@ def optionExist (mat, option):
     if len(non_zeros[0]) >= 1:
         return True
     return False
+
+def resultIsValid(mat, magic):
+    
+    #Check row summation is the same
+    sum_x = mat.sum(axis=0)
+    if sum_x[0] != sum_x[1] or sum_x[1] != sum_x[2] or sum_x[2] != magic:
+        return False
+    
+    #Check column summation is the same
+    sum_y = mat.sum(axis=1)
+    if sum_y[0] != sum_y[1] or sum_y[1] != sum_y[2] or sum_y[2] != magic:
+        return False
+    
+    #check diagonals
+    if mat[0,0]+mat[1,1]+mat[2,2] != magic or mat[0,2]+mat[1,1]+mat[2,0] != magic:
+        return False    
+    return True
