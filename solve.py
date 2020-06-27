@@ -6,36 +6,7 @@ import numpy as np
 from auxilary import *
 import copy
 
-def addOption (mat, neighbours, magic, orig_mat, options):
-    '''
-    Adds option to the best cell (cell with most effect)
 
-    return True:
-        if option is added successfully
-    return False: in case of erros
-        0: option extends magic
-        1: no options at all !
-    '''
-    option_exist, option_x , option_y = getBestOption(mat,neighbours)
-    
-    if option_exist:
-        idx = (option_x*3) + option_y
-        options[idx] += 1
-        while optionExist (mat, options[idx]):
-            options[idx] += 1
-        if options[idx] > magic:
-            #one step back
-            return False, 0
-        else:   
-            mat[option_x, option_y] = options[idx] 
-            return True, 1
-
-    else:
-        #Report problem!
-        print ("Error: no options are available")
-        print ("matrix: ")
-        print (mat)   
-        return False, 1
                 
 
 def solve(mat):
@@ -76,8 +47,10 @@ def solve(mat):
     #Non zero elements
     non_zeros = np.where(mat != 0)
 
+    #STATE 1: fill forced with no added options
+    #Logic:
+        # + Just filling the forced cells
     if magic and len(non_zeros[0]) >= 4:
-        #state 1: fill forced with no added options
         main_exist = False
         while not main_exist:
             force_Exist, forced_idx_x,forced_idx_y,val = checkForForced(mat,neighbours,magic)
@@ -92,9 +65,16 @@ def solve(mat):
                         print (mat)
                         main_exist = True
         return
-        
+    
+    #STATE 2..add option first and come back later
+    #Logic:
+    #   + Find the best option available, the one cell close to most number of cells
+    #   + try values from 1 to magic, except the unique/already used values
+    #   + other cells will be forced for sure
+    #   + did we reach a solution?
+    #   + if not, try another option untill they're all done...
+    #   + if no solution found, then exit...
     if magic and len(non_zeros[0]) < 4:
-        #state 2..add option first and come back later
         exit_main = False
         while not exit_main:
             # options_count = 0
@@ -132,6 +112,60 @@ def solve(mat):
             #remove option
             mat = copy.deepcopy(orig_mat)
    
+    #STATE 3: no magic, then option needed
+    if not magic:
+        exit_main = False
+        option_occur = []
+        while not exit_main:
+            magic = checkForMagic(mat)
+            while not magic:
+                option_exist, state = addOption(mat, neighbours, 0, orig_mat, options)
+                if option_exist:
+                    option_occur.append(state)
+                else:
+                    print ("Error: no more options!")
+                    return
+                magic = checkForMagic(mat)
+        #since we have magic
+        #we need to force the answer
+            exit_force = False
+            step_back = False
+            option_mat = copy.deepcopy(mat)
+            while not exit_force:
+                force_Exist, forced_idx_x,forced_idx_y,val = checkForForced(mat,neighbours,magic)
+                if force_Exist:
+                    #update the mat
+                    mat[forced_idx_x][forced_idx_y] = val
+                    #check for violation
+                    if checkNoViolation(mat, magic):
+                        #check if all done
+                        if allDone(mat):
+                            print("all done")
+                            print (mat)
+                            exit_main = True
+                            exit_force = True
+                            step_back = False
+                            return
+                    else:
+                        #move step backward
+                        exit_force = True
+                        step_back = True
+                #force does not exist, and we ain't done yet...
+                step_back = True
+            if step_back:
+                #Try first to increment the last option
+                mat = copy.deepcopy(option_mat)
+                inc_option = incrementOption (mat, neighbours, magic, orig_mat, options, option_occur)
+                magic = checkForMagic(mat)
+                if not inc_option:
+                    removeOption(mat, options,option_occur)
+
+
+
+
+
+
+
 if __name__ == "__main__":
     #GLOBAL VARIABLES
     # orig_mat = np.zeros([3,3])
@@ -141,9 +175,11 @@ if __name__ == "__main__":
     #mat = np.arange(9).reshape(3, 3)
     mat = np.zeros([3,3])
     # mat[0,0] = 5
-    mat[0,1] = 7
-    mat[0,2] = 16
-    mat[1,0] = 15
-    
+    # mat[0,1] = 7
+    # mat[0,2] = 16
+    # mat[1,0] = 15
+    # mat[2,1] = 7
+    # mat [2,2] = 11
+    mat[1,1] = 1
     solve(mat)
     
