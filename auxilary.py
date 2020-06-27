@@ -261,16 +261,37 @@ def removeOption (mat, options, option_occur):
 
     return True
 
+def checkForCross(mat):
+    #check for cross!
+    if mat[0,1] != 0 and mat[1,1] != 0 and mat[2,1] != 0:
+        #Vertical
+        if mat[1,0] != 0 or mat[1,2] != 0:
+            return True
+    if mat[1,0] != 0 and mat[1,1] != 0 and mat[1,2] != 0:
+        #Horizontal
+        if mat[0,1] != 0 or mat[2,1] != 0:
+            return True
+    return False
+
+
 def findListOfOptions(mat, neighbours, orig_mat,options):
     option_list = []
+    #Add first option
     option_exist, state = addOption(mat, neighbours, 0, orig_mat, options)
+    #if found, append it
     if option_exist: option_list.append(state)
+    #do we reach magic?
     magic = checkForMagic(mat)
+    #how many numbers do we have?
     non_zeros = np.where(mat != 0)
-    while not magic or len(non_zeros[0]) < 4:
+    crossExist = False
+    if len(non_zeros[0]) == 4:
+        crossExist = checkForCross(mat)
+    while not magic or len(non_zeros[0]) < 4 or crossExist:
         option_exist, state = addOption(mat, neighbours, 0, orig_mat, options)
         if option_exist: option_list.append(state)
         magic = checkForMagic(mat)
         non_zeros = np.where(mat != 0)
+        crossExist = False
     
     return option_list 
