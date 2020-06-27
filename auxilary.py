@@ -260,3 +260,15 @@ def removeOption (mat, options, option_occur):
     options[last_option] = 0
 
     return True
+
+def findListOfOptions(mat, neighbours, orig_mat,options):
+    option_list = []
+    option_exist, state = addOption(mat, neighbours, 0, orig_mat, options)
+    magic = checkForMagic(mat)
+    if option_exist: option_list.append(state)
+    while not magic:
+        option_exist, state = addOption(mat, neighbours, 0, orig_mat, options)
+        if option_exist: option_list.append(state)
+        magic = checkForMagic(mat)
+    
+    return option_list 
