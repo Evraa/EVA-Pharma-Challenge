@@ -71,6 +71,7 @@ def solve(mat):
     options = []
     for _ in range(9): options.append(0)
     MAX_ITR = 100
+    MIN_IIR = 1
     #Check for magic
     magic = checkForMagic(mat)
     
@@ -149,21 +150,54 @@ def solve(mat):
 #       + try every permutation of these numbers and increment them inorder to find the working set
     if not magic:
         option_list = findListOfOptions(mat, neighbours, orig_mat,options)
-
         if len(option_list) == 1:
             option_x = option_list[0] // 3
             option_y = option_list[0] % 3
-            for i in range(1, MAX_ITR):
-                
-                if not optionExist(mat,i):
-                    mat[option_x, option_y] = i
-                    if solveForced(mat, neighbours ):
-                        return True
-                    else:
-                        mat = copy.deepcopy(orig_mat)
+            ev_terminate = False
+            while not ev_terminate:
+                for i in range(MIN_IIR, MAX_ITR):
+                    if not optionExist(mat,i):
+                        mat[option_x, option_y] = i
+                        if solveForced(mat, neighbours ):
+                            return True
+                        else:
+                            mat = copy.deepcopy(orig_mat)
+                print (f'iteration from {MIN_IIR} to {MAX_ITR} did not give the deisred solution')
+                MIN_IIR = MAX_ITR
+                MAX_ITR *= 2
+                ev_key = str(input ("press 'Y' or 'y' for increasing to double it, any other key for termination: \n"))
+                if ev_key != 'y' and ev_key != 'Y':
+                    return False
             print ("Sorry: no solution exist!")
         if len(option_list) == 2:
-            pass
+            option_1_x = option_list[0] // 3
+            option_1_y = option_list[0] % 3
+            option_2_x = option_list[1] // 3
+            option_2_y = option_list[1] % 3
+            mat = copy.deepcopy(orig_mat)
+            for i in range (MIN_IIR, MAX_ITR):
+                if not optionExist(mat,i):
+                    for j in range (MIN_IIR, MAX_ITR):
+                        if not optionExist(mat,j) and i != j:
+                            mat[option_1_x, option_1_y] = i
+                            mat[option_2_x, option_2_y] = j
+                            if solveForced(mat, neighbours ):
+                                return True
+                            else:
+                                mat = copy.deepcopy(orig_mat)
+                                mat[option_1_x, option_1_y] = j
+                                mat[option_2_x, option_2_y] = i
+                                if solveForced(mat, neighbours ):
+                                    return True
+                                else:
+                                    mat = copy.deepcopy(orig_mat)
+
+            print (f'iteration from {MIN_IIR} to {MAX_ITR} did not give the deisred solution')
+            MIN_IIR = MAX_ITR
+            MAX_ITR *= 2
+            ev_key = str(input ("press 'Y' or 'y' for increasing to double it, any other key for termination: \n"))
+            if ev_key != 'y' and ev_key != 'Y':
+                return False                    
         if len(option_list) == 3:
             pass
         if len(option_list) == 0:
@@ -183,9 +217,9 @@ if __name__ == "__main__":
     # mat[0,0] = 5
     mat[0,1] = 7
     mat[0,2] = 16
-    mat[1,0] = 15
+    # mat[1,0] = 15
     # mat[2,1] = 7
-    mat [2,2] = 11
+    # mat [2,2] = 11
     # mat[1,1] = 1
     solve(mat)
     

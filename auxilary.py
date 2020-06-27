@@ -264,11 +264,13 @@ def removeOption (mat, options, option_occur):
 def findListOfOptions(mat, neighbours, orig_mat,options):
     option_list = []
     option_exist, state = addOption(mat, neighbours, 0, orig_mat, options)
-    magic = checkForMagic(mat)
     if option_exist: option_list.append(state)
-    while not magic:
+    magic = checkForMagic(mat)
+    non_zeros = np.where(mat != 0)
+    while not magic or len(non_zeros[0]) < 4:
         option_exist, state = addOption(mat, neighbours, 0, orig_mat, options)
         if option_exist: option_list.append(state)
         magic = checkForMagic(mat)
+        non_zeros = np.where(mat != 0)
     
     return option_list 
