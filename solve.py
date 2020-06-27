@@ -202,6 +202,7 @@ def solve(mat):
                     return False                    
         if len(option_list) == 3:
             permutations = [[0,1,2],[0,2,1],[1,0,2],[2,0,1],[1,2,0],[2,1,0]]
+            memoize = np.zeros([100,100,100])
             options_x = []
             options_y = []
             for i in range(3):
@@ -217,14 +218,16 @@ def solve(mat):
                             if not optionExist(mat,j) and i!=j:
                                 for k in range (MIN_IIR, MAX_ITR):
                                     if not optionExist(mat,k) and k!=j and k != i:
-                                        for perm in permutations:
-                                            mat[options_x[perm[0]], options_y[perm[0]]] = i
-                                            mat[options_x[perm[1]], options_y[perm[1]]] = j
-                                            mat[options_x[perm[2]], options_y[perm[2]]] = k
-                                            if solveForced(mat, neighbours ):
-                                                return True
-                                            else:
-                                                mat = copy.deepcopy(orig_mat)
+                                        if not weveBeenHere(memoize,i,j,k):
+                                            for perm in permutations:
+                                                mat[options_x[perm[0]], options_y[perm[0]]] = i
+                                                mat[options_x[perm[1]], options_y[perm[1]]] = j
+                                                mat[options_x[perm[2]], options_y[perm[2]]] = k
+                                                if solveForced(mat, neighbours ):
+                                                    return True
+                                                else:
+                                                    mat = copy.deepcopy(orig_mat)
+                                            markThese(memoize,i,j,k)    
                 print (f'iteration from {MIN_IIR} to {MAX_ITR} did not give the deisred solution')
                 MIN_IIR = MAX_ITR
                 MAX_ITR *= 2

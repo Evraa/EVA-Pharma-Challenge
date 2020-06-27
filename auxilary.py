@@ -295,3 +295,30 @@ def findListOfOptions(mat, neighbours, orig_mat,options):
         crossExist = False
     
     return option_list 
+
+def markThese(memoize,i,j,k):
+    memoize[i,j,k] = -1
+    memoize[i,k,j] = -1
+    memoize[j,i,k] = -1
+    memoize[k,i,j] = -1
+    memoize[j,k,i] = -1
+    memoize[k,j,i] = -1
+    return
+
+def weveBeenHere(memoize,i,j,k):
+    if memoize[i,j,k] == -1:
+        return True
+    if memoize[i,k,j] == -1:
+        return True
+    if memoize[j,i,k] == -1:
+        return True
+    if memoize[i,j,k] == -1:
+        return True
+    if memoize[k,i,j] == -1:
+        return True
+    if memoize[j,k,i] == -1:
+        return True
+    if memoize[k,j,i] == -1:
+        return True
+    
+    return False
