@@ -6,41 +6,9 @@ import numpy as np
 from auxilary import *
 import copy
 
-
-                
-def solveForced(mat, neighbours ):
-    main_exist = False
-    magic = checkForMagic(mat)
-    orig_mat = copy.deepcopy(mat)
-    terminate_counter = 0
-    while not main_exist:
-        if terminate_counter == 9 :
-            return False
-        force_Exist, forced_idx_x,forced_idx_y,val = checkForForced(mat,neighbours,magic)
-        if force_Exist:
-            #update the mat
-            mat[forced_idx_x][forced_idx_y] = val
-            #check for violation
-            if checkNoViolation(mat, magic):
-                #check if all done
-                if allDone(mat):
-                    if resultIsValid (mat, magic):
-                        print("all done..\n")
-                        print (mat)
-                        print (f"the sum is: {magic}")
-                        return True
-                    else:
-                        mat = copy.deepcopy(orig_mat)
-                        return False
-            else:
-                mat = copy.deepcopy(orig_mat)
-                return False
-        else:
-            terminate_counter += 1
-
     
 
-def solve(mat):
+def solve(mat, state):
     '''
     The main Calling function with the algorithm.
 
@@ -71,8 +39,10 @@ def solve(mat):
     orig_mat = copy.deepcopy(mat) #original matrix, unchangeable
     options = []
     for _ in range(9): options.append(0)
-    MAX_ITR = 100
+    MAX_ITR = 100000
     MIN_IIR = 1
+    ITR_CHECK = 100
+    howManyTimes = 0
     #Check for magic
     magic = checkForMagic(mat)
     
@@ -164,12 +134,11 @@ def solve(mat):
                             return True
                         else:
                             mat = copy.deepcopy(orig_mat)
-                print (f'iteration from {MIN_IIR} to {MAX_ITR} did not give the deisred solution')
-                MIN_IIR = MAX_ITR
-                MAX_ITR *= 2
-                ev_key = str(input ("press 'Y' or 'y' for increasing to double it, any other key for termination: \n"))
-                if ev_key != 'y' and ev_key != 'Y':
-                    return False
+                    if i % ITR_CHECK == 0:
+                        print (f'iteration from {MIN_IIR} to {i} did not give the deisred solution')
+                        ev_key = str(input ("press 'Y' or 'y' for increasing to double it, any other key for termination: \n"))
+                        if ev_key != 'y' and ev_key != 'Y':
+                            return False
             print ("Sorry: no solution exist!")
         if len(option_list) == 2:
             option_1_x = option_list[0] // 3
@@ -179,8 +148,9 @@ def solve(mat):
             mat = copy.deepcopy(orig_mat)
             while True:
                 for i in range (MIN_IIR, MAX_ITR):
+                    print ("working on it...")
                     if not optionExist(mat,i):
-                        for j in range (MIN_IIR, MAX_ITR):
+                        for j in range (1,1000):
                             if not optionExist(mat,j) and i != j:
                                 mat[option_1_x, option_1_y] = i
                                 mat[option_2_x, option_2_y] = j
@@ -194,13 +164,12 @@ def solve(mat):
                                         return True
                                     else:
                                         mat = copy.deepcopy(orig_mat)
-
-                print (f'iteration from {MIN_IIR} to {MAX_ITR} did not give the deisred solution')
-                MIN_IIR = MAX_ITR
-                MAX_ITR *= 2
-                ev_key = str(input ("press 'Y' or 'y' for increasing to double it, any other key for termination: \n"))
-                if ev_key != 'y' and ev_key != 'Y':
-                    return False                    
+                    if i % ITR_CHECK == 0:
+                        print (f'iteration from {MIN_IIR} to {i} did not give the deisred solution')
+                        ev_key = str(input ("press 'Y' or 'y' for increasing to double it, any other key for termination: \n"))
+                        if ev_key != 'y' and ev_key != 'Y':
+                            return False
+                             
         if len(option_list) == 3:
             permutations = [[0,1,2],[0,2,1],[1,0,2],[2,0,1],[1,2,0],[2,1,0]]
             memoize = np.zeros([100,100,100])
@@ -212,12 +181,12 @@ def solve(mat):
 
             mat = copy.deepcopy(orig_mat)
             while True:
-                for i in range (MIN_IIR, MAX_ITR):
-                    print (i)
+                for i in range (1, 100):
+                    print ("working on it...")
                     if not optionExist(mat,i):
-                        for j in range (MIN_IIR, MAX_ITR):
+                        for j in range (MIN_IIR, 100):
                             if not optionExist(mat,j) and i!=j:
-                                for k in range (MIN_IIR, MAX_ITR):
+                                for k in range (MIN_IIR, 100):
                                     if not optionExist(mat,k) and k!=j and k != i:
                                         if not weveBeenHere(memoize,i,j,k):
                                             for perm in permutations:
@@ -225,40 +194,23 @@ def solve(mat):
                                                 mat[options_x[perm[1]], options_y[perm[1]]] = j
                                                 mat[options_x[perm[2]], options_y[perm[2]]] = k
                                                 if solveForced(mat, neighbours ):
-                                                    return True
+                                                    if state == 5:
+                                                        if howManyTimes >= 2:
+                                                            print (f"this was solution number: 3")
+                                                            return True
+                                                        else:
+                                                            howManyTimes += 1
+                                                            print (f"this was solution number: {howManyTimes}")
+                                                            
+                                                    else:
+                                                        return True
                                                 else:
                                                     mat = copy.deepcopy(orig_mat)
                                             markThese(memoize,i,j,k)    
-                print (f'iteration from {MIN_IIR} to {MAX_ITR} did not give the deisred solution')
-                MIN_IIR = MAX_ITR
-                MAX_ITR *= 2
-                ev_key = str(input ("press 'Y' or 'y' for increasing to double it, any other key for termination: \n"))
-                if ev_key != 'y' and ev_key != 'Y':
-                    return False  
+                   
 
         if len(option_list) == 0:
             print ("Error: no options asln!")
             return
 
 
-
-# if __name__ == "__main__":
-#     #GLOBAL VARIABLES
-#     # orig_mat = np.zeros([3,3])
-#     # magic = 0
-
-
-#     #mat = np.arange(9).reshape(3, 3)
-#     mat = np.zeros([3,3])
-
-#     #mat 0
-#     # mat[1,0] = 31
-#     # mat[1,2] = 15
-#     # mat[2,1] = 41
-
-#     #mat 1
-#     # mat[1,2] = 18
-#     mat[2,1] = 28
-
-#     solve(mat)
-    

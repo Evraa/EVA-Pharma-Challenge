@@ -33,18 +33,43 @@ def welcome():
                 x = str(input (f'entry: [{i},{j}]: '))
                 mat[i,j] = int(x)
                 print (mat)
-        return mat
-    # if option == '1':
-    # if option == '2':
-    # if option == '3':
-    # if option == '4':
-    # if option == '5':
+        return mat,0
+    if option == '1':
+        mat = np.zeros([3,3])
+        mat[0,0] = 12
+        mat[0,1] = 17
+        mat[0,2] = 10
+        mat[1,0] = 11
+        return mat,1
+    if option == '2':
+        mat = np.zeros([3,3])
+        mat[0,1] = 7
+        mat[0,2] = 16
+        mat[1,0] = 15
+        mat[2,2] = 11
+        return mat,2
+    if option == '3':
+        mat = np.zeros([3,3])
+        mat[1,0] = 31
+        mat[1,2] = 15
+        mat[2,1] = 41        
+        return mat, 3
+    if option == '4':
+        mat = np.zeros([3,3])
+        mat[1,2] = 18
+        mat[2,1] = 28        
+        return mat, 4
+    if option == '5':
+        mat = np.zeros([3,3])
+        mat[1,2] = 18
+        mat[2,1] = 28        
+        return mat, 5
     # if option == '6':
         
 
 if __name__ == "__main__":
-    mat = welcome()
-    print ("Solving: ")
+    mat, state = welcome()
+    print ("\nSolving: ")
     print (mat)
-    solve(mat)
-    
+    print ("\n")
+    solve(mat, state)

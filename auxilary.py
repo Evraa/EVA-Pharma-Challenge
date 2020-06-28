@@ -1,5 +1,5 @@
 import numpy as np
-
+import copy
 def meetTheNeighbours(mat):
     '''
     returns the neighbours of each cell
@@ -322,3 +322,33 @@ def weveBeenHere(memoize,i,j,k):
         return True
     
     return False
+
+def solveForced(mat, neighbours ):
+    main_exist = False
+    magic = checkForMagic(mat)
+    orig_mat = copy.deepcopy(mat)
+    terminate_counter = 0
+    while not main_exist:
+        if terminate_counter == 9 :
+            return False
+        force_Exist, forced_idx_x,forced_idx_y,val = checkForForced(mat,neighbours,magic)
+        if force_Exist:
+            #update the mat
+            mat[forced_idx_x][forced_idx_y] = val
+            #check for violation
+            if checkNoViolation(mat, magic):
+                #check if all done
+                if allDone(mat):
+                    if resultIsValid (mat, magic):
+                        print("all done..\n")
+                        print (mat)
+                        print (f"the sum is: {magic}")
+                        return True
+                    else:
+                        mat = copy.deepcopy(orig_mat)
+                        return False
+            else:
+                mat = copy.deepcopy(orig_mat)
+                return False
+        else:
+            terminate_counter += 1
