@@ -214,3 +214,62 @@ def solve(mat, state):
             return
 
 
+def solve_ch_6(mat):
+    '''
+    A separate function for challenge 6
+    because it has certain/special constraints
+
+    Logic:
+        + will start with four places
+            o1 o2 o3
+            _  o4  _
+            _   _  _
+        + these will be the options we have
+        + so brutely we'll iterate four times to find the desired solutions
+        + with memoization and fast checking for faster iterations
+    '''
+
+    #Assign data
+    neighbours = meetTheNeighbours(mat) #neighbours of each cell, unchangable
+    options = []
+    for _ in range(9): options.append(0)
+    MAX_ITR = 1000
+    MIN_IIR = 1
+    howManyTimes = 0
+    #Preparing the option cells
+    options[0] = 1
+    options[1] = 2
+    options[2] = 3
+    options[4] = 4
+    options_x = [0,0,0,1]
+    options_y = [0,1,2,1]
+    #Prepare Permutations and memoize
+    permutations = getMeFourPermutaions()
+    memoize = np.zeros([MAX_ITR,MAX_ITR,MAX_ITR])
+    while True:
+        for i in range (1, MAX_ITR):
+            print ("working on it...")
+            if not optionExist(mat,i):
+                for j in range (1, MAX_ITR):
+                    if not optionExist(mat,j) and i!=j:
+                        for k in range (1, MAX_ITR):
+                            if not optionExist(mat,k) and k!=j and k != i:
+                                for l in range (1, MAX_ITR):
+                                    if not optionExist(mat,l) and l != k and l != j and l != i:
+                                        if not weveBeenHere_6(memoize,i,j,k,l):
+                                            for perm in permutations:
+                                                mat[options_x[perm[0]], options_y[perm[0]]] = i
+                                                mat[options_x[perm[1]], options_y[perm[1]]] = j
+                                                mat[options_x[perm[2]], options_y[perm[2]]] = k
+                                                mat[options_x[perm[3]], options_y[perm[3]]] = l
+                                                if solveForced_6(mat, neighbours ):
+                                                    if howManyTimes >= 2:
+                                                        print (f"this was solution number: 3")
+                                                        return True
+                                                    else:
+                                                        howManyTimes += 1
+                                                        print (f"this was solution number: {howManyTimes}")
+                                                            
+                                                else:
+                                                    mat = np.zeros([3,3])
+                                            markThese_6(memoize,i,j,k,l)    

@@ -64,12 +64,17 @@ def welcome():
         mat[1,2] = 18
         mat[2,1] = 28        
         return mat, 5
-    # if option == '6':
-        
+    if option == '6':
+        mat = np.zeros([3,3])
+        return mat, 6
 
 if __name__ == "__main__":
     mat, state = welcome()
-    print ("\nSolving: ")
-    print (mat)
-    print ("\n")
-    solve(mat, state)
+    if state == 6:
+        print ("Start solving challenge 6...")
+        solve_ch_6(mat)
+    else:
+        print ("\nSolving: ")
+        print (mat)
+        print ("\n")
+        solve(mat, state)
