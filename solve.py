@@ -25,8 +25,9 @@ def solveForced(mat, neighbours ):
                 #check if all done
                 if allDone(mat):
                     if resultIsValid (mat, magic):
-                        print("all done")
+                        print("all done..\n")
                         print (mat)
+                        print (f"the sum is: {magic}")
                         return True
                     else:
                         mat = copy.deepcopy(orig_mat)
@@ -92,10 +93,10 @@ def solve(mat):
                 if checkNoViolation(mat, magic):
                     #check if all done
                     if allDone(mat):
-                        print("all done")
+                        print("all done..\n")
                         print (mat)
-                        main_exist = True
-        return
+                        print (f"the sum is: {magic}")
+                        return 
     
     #STATE 2..add option first and come back later
     #Logic:
@@ -128,9 +129,9 @@ def solve(mat):
                     #check if all done
                     if allDone(mat):
                         if resultIsValid (mat, magic):
-                            print("all done")
+                            print("all done..\n")
                             print (mat)
-                            exit_main = True
+                            print (f"the sum is: {magic}")
                             return
                 else:
                     #increment the option
@@ -241,23 +242,23 @@ def solve(mat):
 
 
 
-if __name__ == "__main__":
-    #GLOBAL VARIABLES
-    # orig_mat = np.zeros([3,3])
-    # magic = 0
+# if __name__ == "__main__":
+#     #GLOBAL VARIABLES
+#     # orig_mat = np.zeros([3,3])
+#     # magic = 0
 
 
-    #mat = np.arange(9).reshape(3, 3)
-    mat = np.zeros([3,3])
+#     #mat = np.arange(9).reshape(3, 3)
+#     mat = np.zeros([3,3])
 
-    #mat 0
-    # mat[1,0] = 31
-    # mat[1,2] = 15
-    # mat[2,1] = 41
+#     #mat 0
+#     # mat[1,0] = 31
+#     # mat[1,2] = 15
+#     # mat[2,1] = 41
 
-    #mat 1
-    mat[1,2] = 18
-    mat[2,1] = 28
+#     #mat 1
+#     # mat[1,2] = 18
+#     mat[2,1] = 28
 
-    solve(mat)
+#     solve(mat)
     
