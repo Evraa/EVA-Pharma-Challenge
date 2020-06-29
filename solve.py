@@ -233,8 +233,7 @@ def solve_ch_6(mat):
     neighbours = meetTheNeighbours(mat) #neighbours of each cell, unchangable
     options = []
     for _ in range(9): options.append(0)
-    MAX_ITR = 1000
-    MIN_IIR = 1
+    MAX_ITR = 100
     howManyTimes = 0
     #Preparing the option cells
     options[0] = 1
@@ -245,15 +244,17 @@ def solve_ch_6(mat):
     options_y = [0,1,2,1]
     #Prepare Permutations and memoize
     permutations = getMeFourPermutaions()
-    memoize = np.zeros([MAX_ITR,MAX_ITR,MAX_ITR])
+    memoize = np.zeros([MAX_ITR,MAX_ITR,MAX_ITR,MAX_ITR])
     while True:
         for i in range (1, MAX_ITR):
-            print ("working on it...")
             if not optionExist(mat,i):
+                print (f"working on it 1...{i}")
                 for j in range (1, MAX_ITR):
                     if not optionExist(mat,j) and i!=j:
+                        print (f"working on it 2...{i} of {j}")
                         for k in range (1, MAX_ITR):
                             if not optionExist(mat,k) and k!=j and k != i:
+                                # print ("working on it 3...")
                                 for l in range (1, MAX_ITR):
                                     if not optionExist(mat,l) and l != k and l != j and l != i:
                                         if not weveBeenHere_6(memoize,i,j,k,l):

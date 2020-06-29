@@ -498,6 +498,14 @@ def solveForced_6(mat, neighbours ):
                     if resultIsValid_6 (mat, magic):
                         print("all done..\n")
                         print (mat)
+                        with open('data.txt', 'w') as f:
+                            for row in mat:
+                                for element in row:
+                                    f.write(str(element))
+                                    f.write("\n")
+                        f.write("\n")
+                        f.write("\n")
+                        f.write("\n")
                         print (f"the sum is: {magic}")
                         return True
                     else:
