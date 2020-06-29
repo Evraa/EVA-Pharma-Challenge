@@ -233,7 +233,7 @@ def solve_ch_6(mat):
     neighbours = meetTheNeighbours(mat) #neighbours of each cell, unchangable
     options = []
     for _ in range(9): options.append(0)
-    MAX_ITR = 100
+    MAX_ITR = 1000
     howManyTimes = 0
     #Preparing the option cells
     options[0] = 1
@@ -265,11 +265,11 @@ def solve_ch_6(mat):
                                                 mat[options_x[perm[3]], options_y[perm[3]]] = l
                                                 if solveForced_6(mat, neighbours ):
                                                     if howManyTimes >= 2:
-                                                        print (f"this was solution number: 3")
+                                                        print (f"this is solution number: 3")
                                                         return True
                                                     else:
                                                         howManyTimes += 1
-                                                        print (f"this was solution number: {howManyTimes}")
+                                                        print (f"this is solution number: {howManyTimes}")
                                                             
                                                 else:
                                                     mat = np.zeros([3,3])

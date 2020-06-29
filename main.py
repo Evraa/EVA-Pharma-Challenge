@@ -7,10 +7,10 @@ from solve import *
 
 def welcome():
     valid_entry = False
-    print ("Welcome for EVA Pharma challange.")
-    option = str(input ("Pick number from 1 to 6 to show the challange and its answer\
-            \nIf you would like to enter a new matrix, please press 0,\
-            \nbut make sure its solvable, or an Error message will come up...Thank You\
+    print ("\tWelcome to EVA Pharma challange.")
+    option = str(input ("+ Pick a number from 1 to 6 to show the challange and its answer\
+            \n+ If you would like to enter a new matrix, please press 0,\
+            \n+ but make sure its solvable, or an Error message will come up...\n\t\tThank You\
             \n"))
 
     if option == '0' or option == '1' or option == '2' or option == '3' or option == '4' or option == '5' or option == '6':
